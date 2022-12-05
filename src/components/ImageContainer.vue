@@ -3,12 +3,14 @@ import { useMouseInElement } from '@vueuse/core'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 import { fabric } from 'fabric'
-import { useFabric } from '../composables'
+import { useFabric, useRect } from '../composables'
+import ObjectList from './ObjectList.vue'
 
 const plateRef = ref<HTMLCanvasElement>()
 
 const { elementX, elementY, elementHeight, elementWidth } = useMouseInElement(plateRef)
 const { instance } = useFabric(plateRef)
+const { rectangles, add } = useRect(instance)
 
 /**
  * read the image from the clipboard
@@ -49,6 +51,7 @@ const handlePaste = (e: ClipboardEvent) => {
             selectable: false,
             evented: false,
           })
+          img.sendBackwards()
           f.setWidth(img.width || 350)
           f.setHeight(img.height || 100)
           f.renderAll()
@@ -63,22 +66,16 @@ function handleAddRectangle() {
   if (!plate)
     return
 
-  console.log('add rect')
-  const rect = new fabric.Rect({
+  add({
     left: 20,
     top: 20,
     width: 100,
     height: 100,
-    // TODO: var
+    // fill: 'rgba(255,0,0,0.5)',
     fill: '',
-    // TODO: var
     stroke: 'red',
-    // TODO: var
     strokeWidth: 2,
   })
-  plate.add(rect)
-  plate.renderAll()
-  rect.bringToFront()
 }
 
 onMounted(() => {
@@ -90,13 +87,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <button class="rounded-md bg-green-500 text-white pb-2 px-5" @click="handleAddRectangle">
-    add
-  </button>
-  <div class="image-container p-5 mx-2 border-2 border-gray-400 ">
-    <div class="flex items-center justify-start gap-1">
-      <div class="border-2 flex">
-        <span class="align-middle text-center leading-none">
+  <div class="image-container p-2 mx-2 border-2 border-gray-400 flex">
+    <div class="flex flex-col justify-start gap-1 w-[120px]">
+      <div class="border-2 flex flex-col">
+        <span class="align-middle leading-none">
           鼠标位置
         </span>
         <div class="align-middle">
@@ -105,11 +99,19 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="border-2">
-        图片尺寸：高{{ Math.floor(elementWidth) }} * 宽{{ Math.floor(elementHeight) }}
+        <span>图片尺寸</span>
+        <p>高{{ Math.floor(elementWidth) }}</p>
+        <P>宽{{ Math.floor(elementHeight) }}</P>
       </div>
+      <button class="rounded-md bg-green-500 text-white pb-2 px-5" @click="handleAddRectangle">
+        ADD
+      </button>
     </div>
-    <div style="max-width: 70vw; max-height: 70vh; overflow: scroll;">
+    <div style="overflow: scroll; flex: 1">
       <canvas id="plate" ref="plateRef" @paste="() => {}" />
+    </div>
+    <div>
+      <ObjectList :rectangles="rectangles" />
     </div>
   </div>
 </template>

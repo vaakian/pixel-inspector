@@ -7,7 +7,7 @@ specifiers:
   '@vueuse/core': ^9.6.0
   autoprefixer: ^10.4.13
   eslint: ^8.29.0
-  fabric: ^5.2.4
+  fabric: 5.2.1
   postcss: ^8.4.19
   tailwindcss: ^3.2.4
   typescript: ^4.6.4
@@ -19,7 +19,7 @@ dependencies:
   '@antfu/eslint-config': 0.33.1_s5ps7njkmjlaqajutnox5ntcla
   '@vueuse/core': 9.6.0_vue@3.2.45
   eslint: 8.29.0
-  fabric: 5.2.4
+  fabric: 5.2.1
   vue: 3.2.45
 
 devDependencies:
@@ -1815,8 +1815,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /fabric/5.2.4:
-    resolution: {integrity: sha512-3+oLKvsbSJ76/nvPPrQVuUJDp0kOh8i867PpdrOPIHUyN+eLc+9nY3rmzMmDw6ndRm20f/uULv55G8sN01j9+Q==}
+  /fabric/5.2.1:
+    resolution: {integrity: sha512-Irltx4i+aLccWgdQj2Uvrwh/XulDAqqYMZ1bI13fAtmlxl4ggobo0t7VVYy3Ob4YEB0sCeJZKE8ExZgGo/amkw==}
     engines: {node: '>=14.0.0'}
     optionalDependencies:
       canvas: 2.10.2

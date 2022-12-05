@@ -12,7 +12,7 @@
     "@antfu/eslint-config": "^0.33.1",
     "@vueuse/core": "^9.6.0",
     "eslint": "^8.29.0",
-    "fabric": "^5.2.4",
+    "fabric": "5.2.1",
     "vue": "^3.2.41"
   },
   "devDependencies": {
