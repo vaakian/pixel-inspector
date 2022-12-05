@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { useMouseInElement } from '@vueuse/core'
-import { ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 import { fabric } from 'fabric'
 import { useFabric } from '../composables'
 
 const plateRef = ref<HTMLCanvasElement>()
-// const {} = useClipboard()
 
 const { elementX, elementY, elementHeight, elementWidth } = useMouseInElement(plateRef)
 const { instance } = useFabric(plateRef)
 
+/**
+ * read the image from the clipboard
+ * then add it to the fabric canvas plate
+ * @param e
+ */
 const handlePaste = (e: ClipboardEvent) => {
   // read image from clipboard
   const items = e.clipboardData?.items
@@ -76,33 +80,45 @@ function handleAddRectangle() {
   plate.renderAll()
   rect.bringToFront()
 }
+
+onMounted(() => {
+  document.addEventListener('paste', handlePaste)
+})
+onUnmounted(() => {
+  document.removeEventListener('paste', handlePaste)
+})
 </script>
 
 <template>
-  <button @click="handleAddRectangle">
+  <button class="rounded-md bg-green-500 text-white pb-2 px-5" @click="handleAddRectangle">
     add
   </button>
-  <div class="image-container" @paste="handlePaste">
-    <div class="attributes">
-      <div style="border: 1px solid green;">
-        <p>x: {{ Math.floor(elementX) }}</p>
-        <p>y: {{ Math.floor(elementY) }}</p>
+  <div class="image-container p-5 mx-2 border-2 border-gray-400 ">
+    <div class="flex items-center justify-start gap-1">
+      <div class="border-2 flex">
+        <span class="align-middle text-center leading-none">
+          鼠标位置
+        </span>
+        <div class="align-middle">
+          <p>x: {{ Math.floor(elementX) }}</p>
+          <p>y: {{ Math.floor(elementY) }}</p>
+        </div>
       </div>
-      <p>图片尺寸：高{{ Math.floor(elementWidth) }} * 宽{{ Math.floor(elementHeight) }}</p>
+      <div class="border-2">
+        图片尺寸：高{{ Math.floor(elementWidth) }} * 宽{{ Math.floor(elementHeight) }}
+      </div>
     </div>
-    <canvas id="plate" ref="plateRef" @paste="() => {}" />
+    <div style="max-width: 70vw; max-height: 70vh; overflow: scroll;">
+      <canvas id="plate" ref="plateRef" @paste="() => {}" />
+    </div>
   </div>
 </template>
 
 <style lang="postcss">
     .image-container {
-        overflow: scroll;
-        border: 1px solid rosybrown;
+      overflow: scroll;
     }
     #plate {
       border: 1px solid red;
-    }
-    .attributes {
-      display: flex;
     }
 </style>
