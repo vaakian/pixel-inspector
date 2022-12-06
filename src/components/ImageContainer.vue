@@ -54,7 +54,7 @@ const handlePaste = (e: ClipboardEvent) => {
           img.sendBackwards()
           f.setWidth(img.width || 350)
           f.setHeight(img.height || 100)
-          f.renderAll()
+          f.requestRenderAll()
         })
       }
     }

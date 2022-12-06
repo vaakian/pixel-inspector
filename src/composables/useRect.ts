@@ -2,9 +2,11 @@ import type { Ref } from 'vue'
 import { onUnmounted, reactive, ref, watch } from 'vue'
 import { fabric } from 'fabric'
 import type { Position } from '../types'
-
+export interface RectProps extends fabric.IRectOptions {
+  selected?: boolean
+}
 export interface AddRectReturn {
-  shape: fabric.IRectOptions
+  shape: RectProps
   rect: fabric.Rect
 }
 /**
@@ -15,7 +17,7 @@ export interface AddRectReturn {
  */
 export function addRect(
   plate: fabric.Canvas,
-  initialOptions: fabric.IRectOptions = {},
+  initialOptions: RectProps = {},
   syncProps: Array<keyof fabric.IRectOptions> = ['left', 'top', 'width', 'height'],
 ): AddRectReturn {
   const shape = reactive(initialOptions)
@@ -23,6 +25,7 @@ export function addRect(
   const rect = new fabric.Rect({
     fill: 'red',
     ...initialOptions,
+    strokeUniform: true,
   })
 
   const updateShape = () => {
@@ -37,6 +40,14 @@ export function addRect(
   }
   rect.on('moving', updateShape)
   rect.on('resizing', updateShape)
+  rect.onSelect = () => {
+    shape.selected = true
+    return false
+  }
+  rect.onDeselect = () => {
+    shape.selected = false
+    return false
+  }
 
   watch(shape, (newShape) => {
     rect.set(newShape)

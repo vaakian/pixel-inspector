@@ -10,8 +10,10 @@ const { rectangles } = defineProps<{
 <template>
   <div class="object-list m-2 flex justify-center flex-col gap-2">
     <div
-      v-for="({ shape }, index) in rectangles" :key="index"
+      v-for="({ shape }, index) in rectangles"
+      :key="index"
       class="flex border-2 justify-center flex-col"
+      :class="{ 'border-blue-600': shape.selected }"
     >
       <div
         v-for="(value, key) in shape"
