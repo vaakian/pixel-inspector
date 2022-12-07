@@ -87,8 +87,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="image-container p-2 mx-2 border-2 border-gray-400 flex">
-    <div class="flex flex-col justify-start gap-1 w-[120px]">
+  <div class="image-container p-2 mx-2 border-2 border-gray-400 flex max-h-screen">
+    <div class="flex flex-col justify-start gap-1 w-[120px] sticky">
       <div class="border-2 flex flex-col">
         <span class="align-middle leading-none">
           鼠标位置
@@ -107,7 +107,7 @@ onUnmounted(() => {
         ADD
       </button>
     </div>
-    <div style="overflow: scroll; flex: 1">
+    <div style="overflow: scroll; flex: 1;" class="border-dashed border-2 border-indigo-400">
       <canvas id="plate" ref="plateRef" @paste="() => {}" />
     </div>
     <div>
@@ -119,8 +119,5 @@ onUnmounted(() => {
 <style lang="postcss">
     .image-container {
       overflow: scroll;
-    }
-    #plate {
-      border: 1px solid red;
     }
 </style>
