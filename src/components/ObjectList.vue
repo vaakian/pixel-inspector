@@ -2,33 +2,19 @@
 <script setup lang="ts">
 import { useAttrs } from 'vue'
 import type { AddRectReturn } from '../composables'
+import PropList from './PropList.vue'
 const { rectangles } = defineProps<{
   rectangles: AddRectReturn[]
 }>()
 </script>
 
 <template>
-  <div class="object-list m-2 flex justify-center flex-col gap-2">
-    <div
-      v-for="({ shape }, index) in rectangles"
+  <div class="object-list m-2 flex flex-col gap-2 max-h-full overflow-y-scroll">
+    <PropList
+      v-for="(rectangle, index) in rectangles"
       :key="index"
-      class="flex border-2 justify-center flex-col"
-      :class="{ 'border-blue-600': shape.selected }"
-    >
-      <div
-        v-for="(value, key) in shape"
-        :key="key"
-        class="flex justify-end"
-      >
-        <span>{{ key }}:</span>
-        <input
-          v-model="shape[key]"
-          class="w-20 text-center"
-          :type="(typeof value === 'number') ? 'number' : 'text'"
-          :placeholder="key"
-        >
-      </div>
-    </div>
+      :rectangle="rectangle"
+    />
   </div>
 </template>
 

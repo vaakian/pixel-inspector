@@ -93,7 +93,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="image-container p-2 mx-2 border-2 border-gray-400 flex max-h-screen">
+  <div class="image-container p-2 mx-2 border-2 border-gray-400 flex h-screen">
     <div class="flex flex-col justify-start gap-1 w-[120px] sticky">
       <div class="border-2 flex flex-col">
         <span class="align-middle leading-none">
@@ -119,9 +119,7 @@ onUnmounted(() => {
     <div style="overflow: scroll; flex: 1;" class="border-dashed border-2 border-indigo-400">
       <canvas id="plate" ref="plateRef" @paste="() => {}" />
     </div>
-    <div>
-      <ObjectList :rectangles="rectangles" />
-    </div>
+    <ObjectList :rectangles="rectangles" />
   </div>
 </template>
 
