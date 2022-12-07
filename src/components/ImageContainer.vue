@@ -9,7 +9,7 @@ import ObjectList from './ObjectList.vue'
 const plateRef = ref<HTMLCanvasElement>()
 
 const { elementX, elementY, elementHeight, elementWidth } = useMouseInElement(plateRef)
-const { instance } = useFabric(plateRef)
+const { instance, getObjectURL } = useFabric(plateRef)
 const { rectangles, add } = useRect(instance)
 
 /**
@@ -78,6 +78,12 @@ function handleAddRectangle() {
   })
 }
 
+function handleGetCanvasImage() {
+  const url = getObjectURL()
+  if (url)
+    window.open(url, '_blank')
+}
+
 onMounted(() => {
   document.addEventListener('paste', handlePaste)
 })
@@ -105,6 +111,9 @@ onUnmounted(() => {
       </div>
       <button class="rounded-md bg-green-500 text-white pb-2 px-5" @click="handleAddRectangle">
         ADD
+      </button>
+      <button class="rounded-md bg-green-500 text-white pb-2 px-5" @click="handleGetCanvasImage">
+        OPEN
       </button>
     </div>
     <div style="overflow: scroll; flex: 1;" class="border-dashed border-2 border-indigo-400">
