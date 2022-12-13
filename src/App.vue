@@ -5,7 +5,7 @@ import ImageContainer from './components/ImageContainer.vue'
 <template>
   <div>
     <p class="text-2xl text-center">
-      Pixel preview
+      Pixel Inspector
       <span class="text-gray-500">(paste an image to start)</span>
     </p>
     <ImageContainer />
