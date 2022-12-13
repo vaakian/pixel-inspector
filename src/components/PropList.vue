@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { AddRectReturn } from '../composables'
+import Prop from './Prop.vue'
 
 const { rectangle } = defineProps<{
   rectangle: AddRectReturn
@@ -8,13 +9,26 @@ const { rectangle } = defineProps<{
 
 const { shape } = rectangle
 
-const pointBR = computed(() => {
-  const x = (shape.left || 0) + (shape.width || 0)
-  const y = (shape.top || 0) + (shape.height || 0)
-  return { x, y }
+const BRX = computed({
+  get() {
+    const x = (shape.left || 0) + (shape.width || 0)
+    return x
+  },
+  set(newValue) {
+    shape.width = newValue - (shape.left || 0)
+  },
 })
 
-const colorProp = ['fill', 'stroke'] as const
+const BRY = computed({
+  get() {
+    return (shape.top || 0) + (shape.height || 0)
+  },
+  set(newValue) {
+    shape.height = newValue - (shape.top || 0)
+  },
+})
+
+const omittedProp = ['selected'] as const
 </script>
 
 <template>
@@ -24,22 +38,22 @@ const colorProp = ['fill', 'stroke'] as const
   >
     <div class="flex flex-col justify-center">
       <p>左上：{{ shape.left }}, {{ shape.top }}</p>
-      <p>右下：{{ pointBR.x }}, {{ pointBR.y }}</p>
+      <p>右下：{{ BRX }}, {{ BRY }}</p>
     </div>
 
-    <div
-      v-for="(value, key) in shape"
+    <template
+      v-for="(_, key) in shape"
       :key="key"
-      class="flex justify-end"
     >
-      <span>{{ key }}:</span>
-      <input
+      <Prop
+        v-if="!omittedProp.includes(key as unknown as any)"
         v-model="shape[key]"
-        class="w-20 text-center border-2 mb-1"
-        :type="(typeof value === 'number') ? 'number' : colorProp.includes(key as any) ? 'color' : 'text'"
-        rgba
-        :placeholder="key"
-      >
-    </div>
+        :name="key"
+        class="flex justify-end"
+      />
+    </template>
+
+    <Prop v-model="BRX" name="BRX" />
+    <Prop v-model="BRY" name="BRY" />
   </div>
 </template>
