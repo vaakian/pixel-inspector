@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMouseInElement } from '@vueuse/core'
+import { useFileDialog, useMagicKeys, useMouseInElement } from '@vueuse/core'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 import { fabric } from 'fabric'
@@ -7,10 +7,48 @@ import { useFabric, useRect } from '../composables'
 import ObjectList from './ObjectList.vue'
 
 const plateRef = ref<HTMLCanvasElement>()
+const isPlateEmpty = ref(true)
 
 const { elementX, elementY, elementHeight, elementWidth } = useMouseInElement(plateRef)
 const { instance, getObjectURL } = useFabric(plateRef)
 const { rectangles, add } = useRect(instance)
+
+const d = useFileDialog()
+
+const paintFile = (blob: File | null) => {
+  isPlateEmpty.value = true
+  const reader = new FileReader()
+  if (!blob || !reader)
+    return
+  reader.readAsArrayBuffer(blob)
+
+  reader.onload = (e) => {
+    const data = e.target?.result
+
+    // ObjectURL
+    const url = URL.createObjectURL(blob)
+
+    if (data) {
+      isPlateEmpty.value = false
+      fabric.Image.fromURL(url, (img) => {
+        const f = instance.value
+        if (!f)
+          return
+
+        f.add(img)
+        // set img un-draggable
+        img.set({
+          selectable: false,
+          evented: false,
+        })
+        img.sendBackwards()
+        f.setWidth(img.width || 350)
+        f.setHeight(img.height || 100)
+        f.requestRenderAll()
+      })
+    }
+  }
+}
 
 /**
  * read the image from the clipboard
@@ -27,39 +65,37 @@ const handlePaste = (e: ClipboardEvent) => {
   // add to fabric plate and adjust the size of the plate
   if (item.type.includes('image')) {
     const blob = item.getAsFile()
-    const reader = new FileReader()
-    if (!blob || !reader)
-      return
-    reader.readAsArrayBuffer(blob)
-    console.log(blob)
-
-    reader.onload = (e) => {
-      const data = e.target?.result
-
-      // ObjectURL
-      const url = URL.createObjectURL(blob)
-
-      if (data) {
-        fabric.Image.fromURL(url, (img) => {
-          const f = instance.value
-          if (!f)
-            return
-
-          f.add(img)
-          // set img un-draggable
-          img.set({
-            selectable: false,
-            evented: false,
-          })
-          img.sendBackwards()
-          f.setWidth(img.width || 350)
-          f.setHeight(img.height || 100)
-          f.requestRenderAll()
-        })
-      }
-    }
+    if (blob)
+      paintFile(blob)
   }
 }
+
+/**
+ * open a file dialog
+ */
+const handleOpenImage = () => {
+  d.open({
+    multiple: false,
+    accept: 'image/*',
+  })
+}
+
+/**
+ * watch the file changes
+ */
+watch(d.files, (files) => {
+  const image = files?.[0]
+  if (image)
+    paintFile(image)
+})
+
+const keys = useMagicKeys()
+const shiftL = keys['shift+l']
+// bind shortcut `SHIFT + L`
+watch(shiftL, (state) => {
+  if (state)
+    handleOpenImage()
+})
 
 function handleAddRectangle() {
   const plate = instance.value
@@ -118,6 +154,10 @@ onUnmounted(() => {
     </div>
     <div style="overflow: scroll; flex: 1;" class="border-dashed border-2 border-indigo-400">
       <canvas id="plate" ref="plateRef" @paste="() => {}" />
+      <!-- tip -->
+      <h1 v-if="isPlateEmpty" class="text-center text-2xl text-gray-600">
+        将图片粘贴到这里，或<span class="text-ellipsis underline cursor-pointer" @click="handleOpenImage">选择文件</span>。
+      </h1>
     </div>
     <ObjectList :rectangles="rectangles" />
   </div>

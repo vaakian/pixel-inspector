@@ -1,6 +1,5 @@
 <!-- show property of rectangles -->
 <script setup lang="ts">
-import { useAttrs } from 'vue'
 import type { AddRectReturn } from '../composables'
 import PropList from './PropList.vue'
 const { rectangles } = defineProps<{
