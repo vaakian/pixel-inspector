@@ -13,7 +13,9 @@
     "@vueuse/core": "^9.6.0",
     "eslint": "^8.29.0",
     "fabric": "5.2.1",
-    "vue": "^3.2.41"
+    "vue": "^3.2.41",
+    "wellknown": "^0.5.0",
+    "wkt-parser-helper": "^4.1.0"
   },
   "devDependencies": {
     "@types/fabric": "^4.5.14",

@@ -4,6 +4,7 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 import { fabric } from 'fabric'
 import { useFabric, useRect } from '../composables'
+import { drawMultiLineString } from '../utils'
 import ObjectList from './ObjectList.vue'
 
 const plateRef = ref<HTMLCanvasElement>()
